@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy load components
+const RecipeDetails = lazy(() => import('./pages/RecipeDetails'));
+const Profile = lazy(() => import('./pages/Profile'));
+const AddRecipe = lazy(() => import('./pages/AddRecipe'));
+const EditRecipe = lazy(() => import('./pages/EditRecipe'));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/recipe/:id/*" element={<RecipeDetails />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/add-recipe" element={<ProtectedRoute element={<AddRecipe />} />} />
+          <Route path="/edit-recipe/:id" element={<ProtectedRoute element={<EditRecipe />} />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 
